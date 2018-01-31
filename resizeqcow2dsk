@@ -1,0 +1,22 @@
+## Major headache resizing the root file system partition on my virtual windows machine this evening.
+## All sources suggested using virt-resize --expand. This method involves creating a new, larger qcow2, combining it with the old, and then combining the two. 
+## A final step involved expanding the original file to the new file, thus expanding the usable partition space. 
+## This did not work for me. Try this instead:
+## Details: kvm virtual windows 10 machine, running on an Ubuntu 16 host. 8GB Ram, 25GB Storage, 2 core processor. Image is in qcow2 format. 
+## Download tools
+
+
+## Find image
+
+
+## Check out size and partitions of image. Remember, the partitions you see are not root. They are elements of the VM image file. 
+
+## Change size of disk
+
+
+## Change size of partition
+## This really through me for a loop. 
+## There is a lot of device out there that involves using gparted, virt-resize --expand, a live disk, or the Windows disk manager.
+## None of these worked for me. Instead, I downloaded a third party piece of software, and did the adjustment in the guest, using a GUI.
+## It worked perfect
+## Try EaseUS Partition Manager, free version. 
