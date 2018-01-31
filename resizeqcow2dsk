@@ -3,20 +3,40 @@
 ## A final step involved expanding the original file to the new file, thus expanding the usable partition space. 
 ## This did not work for me. Try this instead:
 ## Details: kvm virtual windows 10 machine, running on an Ubuntu 16 host. 8GB Ram, 25GB Storage, 2 core processor. Image is in qcow2 format. 
-## Download tools
 
+## 1. Turn off the guest machine and open a terminal on the host machine
 
-## Find image
+## 2. Download tools (https://serverfault.com/questions/324281/how-do-you-increase-a-kvm-guests-disk-space)
+## Install libvirt file system utilities package
+$ sudo apt-get install libguestfs-tools
+# Test to see if it works (it won't) -- you need to see "===== TEST FINISHED OK =====" at the bottom:
+$ sudo libguestfs-test-tool
+# If you don't see "===== TEST FINISHED OK =====" at the bottom then repair it:
+$ sudo update-guestfs-appliance
+# Run the test again and verify it works
+$ sudo libguestfs-test-tool
 
+## 3. Find image
+## I found these in /var/lib/libvirt/images
 
-## Check out size and partitions of image. Remember, the partitions you see are not root. They are elements of the VM image file. 
+## 4. Check out size and partitions of image. Remember, the partitions you see are not root. They are elements of the VM image file. 
+$ sudo virt-filesystems --long --parts --blkdevs -h -a name-of-guest-disk-file
 
-## Change size of disk
+## 5. Back up image by making a copy in the directory
+cp windows.qcow2 windowsog.qcow2
 
+## 6. Change size of disk
+qemu-img resize windows.qcow2 +5GB
 
-## Change size of partition
+## 7. Check size of disk and partitions again to see the difference
+$ sudo virt-filesystems --long --parts --blkdevs -h -a windows.qcow2
+
+## 8. Change size of virtual root partition to use the newly allocated disk space
 ## This really through me for a loop. 
 ## There is a lot of device out there that involves using gparted, virt-resize --expand, a live disk, or the Windows disk manager.
 ## None of these worked for me. Instead, I downloaded a third party piece of software, and did the adjustment in the guest, using a GUI.
 ## It worked perfect
-## Try EaseUS Partition Manager, free version. 
+## Try EaseUS Partition Master, free version. 
+## https://www.easeus.com/download/partition-manager.html
+
+## 9. Restart the system
